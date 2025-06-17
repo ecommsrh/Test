@@ -1,123 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guest Satisfaction Survey</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f9;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    form {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #0077cc;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    button:hover {
-      background: #005fa3;
-    }
-
-    .success, .error {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 16px;
-      display: none;
-    }
-
-    .success {
-      color: green;
-    }
-
-    .error {
-      color: red;
-    }
-  </style>
-</head>
-<body>
-  <form id="survey-form">
-    <label for="name">Name</label>
-    <input type="text" id="name" name="name" placeholder="Enter your name" required>
-
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" placeholder="Enter your email" required>
-
-    <label for="feedback">Feedback</label>
-    <textarea id="feedback" name="feedback" rows="4" placeholder="Enter your feedback" required></textarea>
-
-    <button type="submit">Submit</button>
-    <div class="success">Feedback sent successfully!</div>
-    <div class="error">Something went wrong. Please try again.</div>
-  </form>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Contact Form</title>
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      emailjs.init("Q1rEEoPnDwzIlIg1I"); // Replace with your EmailJS public key
+    (function() {
+      emailjs.init('Q1rEEoPnDwzIlIg1I'); // Your EmailJS public key
+    })();
 
-      const form = document.getElementById("survey-form");
-      const successMessage = document.querySelector(".success");
-      const errorMessage = document.querySelector(".error");
+    function sendEmail(event) {
+      event.preventDefault();
 
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
 
-        const formData = {
-         name: document.getElementById("name").value,
-  email: document.getElementById("email").value,
-  feedback: document.getElementById("feedback").value,
-        };
+      if (!name || !email) {
+        alert('Please fill in both name and email.');
+        return;
+      }
 
-        emailjs
-          .send("service_b6edvwf", "template_ml62wzs", formData) // Replace with your EmailJS service and template IDs
-          .then(() => {
-            successMessage.style.display = "block";
-            errorMessage.style.display = "none";
-            form.reset();
-          })
-          .catch(() => {
-            successMessage.style.display = "none";
-            errorMessage.style.display = "block";
-          });
-      });
-    });
+      const templateParams = {
+        name: name,    // must match your EmailJS template variable {{name}}
+        email: email   // must match your EmailJS template variable {{email}}
+      };
+
+      emailjs.send('service_b6edvwf', 'template_ml62wzs', templateParams)
+        .then(() => {
+          alert('Email sent successfully!');
+          document.getElementById('contact-form').reset();
+        })
+        .catch((error) => {
+          console.error('Failed to send email:', error);
+          alert('Failed to send email, please try again.');
+        });
+    }
   </script>
+</head>
+<body>
+  <form id="contact-form" onsubmit="sendEmail(event)" style="max-width: 300px; margin: 2rem auto; font-family: Arial, sans-serif;">
+    <label for="name">Name:</label><br/>
+    <input type="text" id="name" name="name" required style="width: 100%; padding: 8px; margin-bottom: 1rem;" /><br/>
+
+    <label for="email">Email:</label><br/>
+    <input type="email" id="email" name="email" required style="width: 100%; padding: 8px; margin-bottom: 1rem;" /><br/>
+
+    <button type="submit" style="padding: 10px 20px; background-color: #0077cc; color: white; border: none; cursor: pointer;">
+      Submit
+    </button>
+  </form>
 </body>
 </html>
